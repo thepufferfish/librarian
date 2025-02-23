@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -25,7 +24,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAKFA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_CREATE_TOPICS: "book_reviews:3:1"
+      KAFKA_CREATE_TOPICS: "bookmarks:3:1"
     networks:
       - kafka-net
 
@@ -65,13 +64,13 @@ services:
     networks:
       - kafka-net
 
-  db:
+  postgres:
     image: postgres
     container_name: postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: books
+      POSTGRES_DB: librarian
     ports:
       - "5432:5432"
     networks:
