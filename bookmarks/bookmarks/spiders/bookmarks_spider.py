@@ -34,7 +34,7 @@ class BookmarksSpider(SitemapSpider):
             'description': description,
             'genres': genres,
             'link': response.url,
-            'last_scraped': datetime.now().isoformat(),
+            'scraped_at': datetime.now().isoformat(),
             'reviews': []
         }
 
@@ -69,7 +69,7 @@ class BookmarksSpider(SitemapSpider):
                 'review_rating': review_rating,
                 'review_text': review_text,
                 'review_link': review_link,
-                'last_scraped': book['last_scraped']
+                'scraped_at': book['scraped_at']
             })
 
         yield book
