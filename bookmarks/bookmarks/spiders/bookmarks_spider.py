@@ -25,8 +25,8 @@ class BookmarksSpider(SitemapSpider):
         description = ''.join(response.xpath('//div[@class="book_manual_description"]//text()').getall()).strip()
         genres = [genre.strip() for genre in response.xpath('//span[@itemprop="genre"]/text()').getall()]
 
-        book_data = {
-            'book_id': str(uuid.uuid5(uuid.NAMESPACE_DNS, title + author)),
+        book = {
+            'book_id': str(uuid.uuid5(uuid.NAMESPACE_DNS, response.url)),
             'title': title,
             'author': author,
             'publisher': publisher,
@@ -42,13 +42,13 @@ class BookmarksSpider(SitemapSpider):
         see_all_reviews_link = see_all_reviews_link.replace('//all', '/all')
         if see_all_reviews_link:
             request = response.follow(see_all_reviews_link, self.parse_reviews)
-            request.meta['book_data'] = book_data
+            request.meta['book'] = book
             yield request
         else:
-            yield book_data
+            yield book
 
     def parse_reviews(self, response):
-        book_data = response.meta['book_data']
+        book = response.meta['book']
 
         reviews = response.xpath('//span[@itemprop="review"]')
         for review in reviews:
@@ -58,7 +58,12 @@ class BookmarksSpider(SitemapSpider):
             review_text = ''.join(review.xpath('.//div[@class="bookmarks_a_review_pullquote"]/text()').getall()).strip()
             review_link = review.xpath('.//a[@class="see_more_link"]/@href').get(default='')
 
-            book_data['reviews'].append({
+            review_id = str(
+                uuid.uuid5(uuid.NAMESPACE_DNS, review_link)
+            )
+
+            book['reviews'].append({
+                'review_id': review_id,
                 'review_author': review_author,
                 'review_publisher': review_publisher,
                 'review_rating': review_rating,
@@ -66,4 +71,4 @@ class BookmarksSpider(SitemapSpider):
                 'review_link': review_link
             })
 
-        yield book_data
+        yield book
