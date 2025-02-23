@@ -68,7 +68,8 @@ class BookmarksSpider(SitemapSpider):
                 'review_publisher': review_publisher,
                 'review_rating': review_rating,
                 'review_text': review_text,
-                'review_link': review_link
+                'review_link': review_link,
+                'last_scraped': book['last_scraped']
             })
 
         yield book
