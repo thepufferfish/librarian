@@ -4,7 +4,7 @@ from pyspark.sql.functions import (
     col, explode, regexp_replace, from_json, row_number, when
 )
 from pyspark.sql.types import (
-    StructType, StringType, ArrayType
+    StructType, StructField, StringType, ArrayType
 )
 
 KAFKA_BROKER = "kafka:9092"
@@ -12,16 +12,16 @@ KAFKA_TOPIC = "bookmarks"
 
 # Define schema
 schema = StructType([
-    ("book_id", StringType()),
-    ("title", StringType()),
-    ("author", StringType()),
-    ("publisher", StringType()),
-    ("publish_date", StringType()),
-    ("description", StringType()),
-    ("genres", ArrayType(StringType())),
-    ("link", StringType()),
-    ("scraped_at", StringType()),
-    ("reviews", ArrayType(StringType()))
+    StructField("book_id", StringType()),
+    StructField("title", StringType()),
+    StructField("author", StringType()),
+    StructField("publisher", StringType()),
+    StructField("publish_date", StringType()),
+    StructField("description", StringType()),
+    StructField("genres", ArrayType(StringType())),
+    StructField("link", StringType()),
+    StructField("scraped_at", StringType()),
+    StructField("reviews", ArrayType(StringType()))
 ])
 
 spark = SparkSession.builder \
