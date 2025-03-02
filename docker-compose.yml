@@ -142,6 +142,18 @@ services:
     networks:
       - kafka-net
 
+  kafka-exporter:
+    image: danielqsj/kafka-exporter
+    container_name: kafka-exporter
+    command:
+      - "--kafka.server=kafka:9092"
+    ports:
+      - "9308:9308"
+    depends_on:
+      - kafka
+    networks:
+      - kafka-net
+
 networks:
   kafka-net:
     driver: bridge
