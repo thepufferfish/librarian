@@ -28,6 +28,25 @@ services:
     networks:
       - kafka-net
 
+  kafka_consumer:
+    build: ./kafka_consumer
+    container_name: kafka_consumer
+    restart: always
+    depends_on:
+      kafka:
+        condition: service_started
+      postgres:
+        condition: service_healthy 
+    environment:
+      - KAFKA_BOOSTRAP_SERVERS=kafka:9092
+      - KAFKA_TOPIC=bookmarks
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=librarian
+      - POSTGRES_HOST=postgres
+    networks:
+      - kafka-net
+
   scrapy:
     build: ./bookmarks
     container_name: scrapy
@@ -65,12 +84,18 @@ services:
       - kafka-net
 
   postgres:
-    image: postgres
+    build: ./database
     container_name: postgres
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: librarian
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "librarian", "-U", "postgres"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
     ports:
       - "5432:5432"
     networks:
